@@ -1,5 +1,16 @@
 # README
 
+Gen是由字节跳动无恒实验室与GORM作者联合研发的一个基于GORM的安全ORM框架，主要通过代码生成方式实现GORM代码封装。
+
+Gen框架在GORM框架的基础上提供了以下能力：
+
+- 基于原始SQL语句生成可重用的CRUD API
+- 生成不使用interface{}的100%安全的DAO API
+- 依据数据库生成遵循GORM约定的结构体Model
+- 支持GORM的所有特性
+
+简单来说，使用Gen框架后我们无需手动定义结构体Model，同时Gen框架也能帮我们生成类型安全的CRUD代码。
+
 ```bash
 docker run -d -p 3306:3306 --privileged=true -e MYSQL_ROOT_PASSWORD=123456 --name mysql mysql:5.7 --character-set-server=utf8mb4 --collation-server=utf8mb4_general_ci
 ```
