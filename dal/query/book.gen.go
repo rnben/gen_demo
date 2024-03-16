@@ -6,6 +6,7 @@ package query
 
 import (
 	"context"
+	"strings"
 
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
@@ -171,6 +172,58 @@ type IBookDo interface {
 	Returning(value interface{}, columns ...string) IBookDo
 	UnderlyingDB() *gorm.DB
 	schema.Tabler
+
+	GetByID(id int) (result model.Book, err error)
+	GetByIDReturnMap(id int) (result map[string]interface{}, err error)
+	GetBooksByAuthor(author string) (result []*model.Book, err error)
+}
+
+// SELECT * FROM @@table WHERE id=@id
+func (b bookDo) GetByID(id int) (result model.Book, err error) {
+	var params []interface{}
+
+	var generateSQL strings.Builder
+	params = append(params, id)
+	generateSQL.WriteString("SELECT * FROM book WHERE id=? ")
+
+	var executeSQL *gorm.DB
+	executeSQL = b.UnderlyingDB().Raw(generateSQL.String(), params...).Take(&result) // ignore_security_alert
+	err = executeSQL.Error
+
+	return
+}
+
+// GetByIDReturnMap 根据ID查询返回map
+//
+// SELECT * FROM @@table WHERE id=@id
+func (b bookDo) GetByIDReturnMap(id int) (result map[string]interface{}, err error) {
+	var params []interface{}
+
+	var generateSQL strings.Builder
+	params = append(params, id)
+	generateSQL.WriteString("SELECT * FROM book WHERE id=? ")
+
+	result = make(map[string]interface{})
+	var executeSQL *gorm.DB
+	executeSQL = b.UnderlyingDB().Raw(generateSQL.String(), params...).Take(result) // ignore_security_alert
+	err = executeSQL.Error
+
+	return
+}
+
+// SELECT * FROM @@table WHERE author=@author
+func (b bookDo) GetBooksByAuthor(author string) (result []*model.Book, err error) {
+	var params []interface{}
+
+	var generateSQL strings.Builder
+	params = append(params, author)
+	generateSQL.WriteString("SELECT * FROM book WHERE author=? ")
+
+	var executeSQL *gorm.DB
+	executeSQL = b.UnderlyingDB().Raw(generateSQL.String(), params...).Find(&result) // ignore_security_alert
+	err = executeSQL.Error
+
+	return
 }
 
 func (b bookDo) Debug() IBookDo {

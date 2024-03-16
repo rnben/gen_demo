@@ -54,6 +54,16 @@ func main() {
 	}
 	fmt.Printf("book:%v\n", book)
 
+	// 使用自定义的GetBooksByAuthor方法
+	rets, err := query.Book.WithContext(context.Background()).GetBooksByAuthor("七米")
+	if err != nil {
+		fmt.Printf("GetBooksByAuthor fail, err:%v\n", err)
+		return
+	}
+	for i, b := range rets {
+		fmt.Printf("%d:%v\n", i, b)
+	}
+
 	// 删除
 	ret, err = query.Book.WithContext(context.Background()).Where(query.Book.ID.Eq(1)).Delete()
 	if err != nil {

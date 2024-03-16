@@ -6,9 +6,10 @@ import (
 	"fmt"
 
 	"gorm.io/driver/mysql"
+	"gorm.io/gen"
 	"gorm.io/gorm"
 
-	"gorm.io/gen"
+	"gen_demo/dal/model"
 )
 
 const MySQLDSN = "root:123456@tcp(127.0.0.1:3306)/db2?charset=utf8mb4&parseTime=True"
@@ -45,7 +46,9 @@ func main() {
 	// 也可以手动指定需要生成代码的数据表
 	g.ApplyBasic(g.GenerateAllTable()...)
 
+	// 通过ApplyInterface添加为book表添加自定义方法
+	g.ApplyInterface(func(model.Querier) {}, g.GenerateModel("book"))
+
 	// 执行并生成代码
 	g.Execute()
 }
-
