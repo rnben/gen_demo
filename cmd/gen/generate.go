@@ -35,7 +35,7 @@ func main() {
 		// gen.WithoutContext：禁用WithContext模式
 		// gen.WithDefaultQuery：生成一个全局Query对象Q
 		// gen.WithQueryInterface：生成Query接口
-		Mode: gen.WithDefaultQuery | gen.WithQueryInterface,
+		Mode: gen.WithDefaultQuery | gen.WithoutContext,
 	})
 
 	// 通常复用项目中已有的SQL连接配置db(*gorm.DB)
@@ -44,7 +44,7 @@ func main() {
 
 	// 从连接的数据库为所有表生成Model结构体和CRUD代码
 	// 也可以手动指定需要生成代码的数据表
-	g.ApplyBasic(g.GenerateAllTable()...)
+	// g.ApplyBasic(g.GenerateAllTable()...)
 
 	// 通过ApplyInterface添加为book表添加自定义方法
 	g.ApplyInterface(func(model.Querier) {}, g.GenerateModel("book"))
